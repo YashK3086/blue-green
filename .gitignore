@@ -1,0 +1,14 @@
+# Ignore Terraform working directory
+.terraform/
+
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore AWS credentials or local env files
+.aws/
+.env
+
+# Ignore OS specific files
+.DS_Store
+Thumbs.db

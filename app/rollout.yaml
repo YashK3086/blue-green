@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: blue-green-rollout
+spec:
+  replicas: 1
+  strategy:
+    blueGreen:
+      activeService: blue-green-service
+      previewService: blue-green-preview-service
+      autoPromotionEnabled: true
+      prePromotionAnalysis:
+        templates:
+          - templateName: success-rate
+  selector:
+    matchLabels:
+      app: blue-green
+      env: blue
+  template:
+    metadata:
+      labels:
+        app: blue-green
+        env: blue # THIS WAS MISSING IN YOUR TEMPLATE
+    spec:
+      containers:
+        - name: web-app
+          image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v1
+          ports:
+            - containerPort: 80

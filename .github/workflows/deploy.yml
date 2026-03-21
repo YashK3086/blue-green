@@ -1,0 +1,25 @@
+name: Auto-Deploy-Blue-Green
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: Update Rollout Image
+        run: |
+          # This replaces the v1 image with your ECR path automatically
+          sed -i 's|image:.*|image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v2|g' rollout.yaml
+          aws eks update-kubeconfig --name ultimate-eks-cluster --region us-east-1
+          kubectl apply -f analysis.yaml
+          kubectl apply -f rollout.yaml
