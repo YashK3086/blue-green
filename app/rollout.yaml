@@ -9,9 +9,9 @@ spec:
       activeService: blue-green-service
       previewService: blue-green-preview-service
       autoPromotionEnabled: true
-      prePromotionAnalysis:
-        templates:
-          - templateName: success-rate
+      #prePromotionAnalysis:
+      #templates:
+      # - templateName: success-rate
   selector:
     matchLabels:
       app: blue-green
@@ -24,6 +24,6 @@ spec:
     spec:
       containers:
         - name: web-app
-          image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v1
+          image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v2
           ports:
             - containerPort: 80

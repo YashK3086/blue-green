@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: blue-green-preview-service
+  name: blue-green-service # <--- THIS MUST MATCH THE ROLLOUT EXACTLY
 spec:
   type: LoadBalancer
   selector:
-    app: blue-green
+    app: blue-green # This tells the LB which pods to grab
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 80 # Double check your Dockerfile for this port!
