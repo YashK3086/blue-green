@@ -45,4 +45,6 @@ jobs:
           kubectl apply -f app/rollout.yaml --validate=false
 
       - name: Success Confirmation
-        run: echo "Deployment triggered successfully. Argo is now handling the Blue-Green swap on EKS."
+        run:
+          echo "Deployment triggered successfully. Argo is now handling the Blue-Green swap on EKS."
+          #Change done
