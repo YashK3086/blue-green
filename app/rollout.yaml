@@ -1,4 +1,3 @@
-apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: blue-green-rollout
@@ -9,9 +8,6 @@ spec:
       activeService: blue-green-service
       previewService: blue-green-preview-service
       autoPromotionEnabled: true
-      #prePromotionAnalysis:
-      #templates:
-      # - templateName: success-rate
   selector:
     matchLabels:
       app: blue-green
@@ -20,10 +16,18 @@ spec:
     metadata:
       labels:
         app: blue-green
-        env: blue # THIS WAS MISSING IN YOUR TEMPLATE
+        env: blue
     spec:
       containers:
         - name: web-app
+          # Note: The GitHub Action below will automatically update this tag
           image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v4
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
