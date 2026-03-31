@@ -44,11 +44,17 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   eks_managed_node_groups = {
-    nodes = {
-      min_size     = 2
-      max_size     = 3
-      desired_size = 2
-      instance_types = ["t3.micro"]
+  nodes = {
+    min_size     = 1  # You can keep this at 1 to save money
+    max_size     = 3  # Increase this to 3
+    desired_size = 3 # Keep this at 1; the autoscaler will increase it when needed
+    instance_types = ["t3.micro"] # These are small, so the autoscaler is definitely needed!
+
+    # ADD THIS TAG BLOCK HERE
+    tags = {
+      "k8s.io/cluster-autoscaler/enabled" = "true"
+      "k8s.io/cluster-autoscaler/blue-green-cluster" = "owned"
+      }
     }
   }
 }
