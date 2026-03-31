@@ -24,6 +24,6 @@ spec:
     spec:
       containers:
         - name: web-app
-          image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v3
+          image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v4
           ports:
             - containerPort: 80
