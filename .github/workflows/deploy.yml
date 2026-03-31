@@ -34,8 +34,8 @@ jobs:
 
       - name: Update Rollout Manifest
         run: |
-          # This command swaps the old image line with the brand new one we just pushed
-          sed -i "s|image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:.*|image: ${{ env.IMAGE_URL }}|" app/rollout.yaml
+          # This version is safer and won't delete other lines
+          sed -i "s|image: 593927188565.*|image: ${{ env.IMAGE_URL }}|" app/rollout.yaml
 
       - name: Push Manifests to EKS
         run: |
