@@ -30,7 +30,7 @@ spec:
     blueGreen:
       activeService: blue-green-service
       previewService: blue-green-preview-service
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
       analysis:
         templates:
           - templateName: success-rate-check
