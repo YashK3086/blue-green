@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  # This tells Argo what the message should look like
+  template.rollout-status: |
+    email:
+      subject: Rollout {{.rollout.metadata.name}} is {{.rollout.status.phase}}
+    slack:
+      attachments:
+      - title: "{{.rollout.metadata.name}}"
+        timestamp: "{{.time}}"
+        color: '{{if eq .rollout.status.phase "Healthy"}}good{{else}}danger{{end}}'
+        fields:
+        - title: Strategy
+          value: "{{.rollout.spec.strategy.type}}"
+          short: true
+        - title: Phase
+          value: "{{.rollout.status.phase}}"
+          short: true
+
+  # This tells Argo WHEN to send the message
+  trigger.on-rollout-completed: |
+    - when: rollout.status.phase in ['Healthy', 'Degraded']
+      send: [rollout-status]
+
+  # This links the secret you created to the Slack service
+  service.slack: |
+    token: $slack-token

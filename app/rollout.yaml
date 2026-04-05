@@ -4,11 +4,6 @@ metadata:
   name: blue-green-rollout
 spec:
   replicas: 1
-  strategy:
-    blueGreen:
-      activeService: blue-green-service
-      previewService: blue-green-preview-service
-      autoPromotionEnabled: true
   selector:
     matchLabels:
       app: blue-green
@@ -21,7 +16,6 @@ spec:
     spec:
       containers:
         - name: web-app
-          # Note: The GitHub Action below will automatically update this tag
           image: 593927188565.dkr.ecr.us-east-1.amazonaws.com/blue-green-app:v4
           ports:
             - containerPort: 80
@@ -32,3 +26,11 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "200m"
+  strategy:
+    blueGreen:
+      activeService: blue-green-service
+      previewService: blue-green-preview-service
+      autoPromotionEnabled: false
+      analysis:
+        templates:
+          - templateName: success-rate-check

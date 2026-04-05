@@ -1,25 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
-  name: success-rate
+  name: success-rate-check
 spec:
   metrics:
     - name: web-check
-      initialDelay: 40s # Increased to give the pod time to clear the Pending state
-      interval: 10s
-      count: 2
-      successCondition: result == "true"
+      interval: 20s
+      count: 3
+      successCondition: result == "200"
       provider:
-        job:
-          spec:
-            template:
-              spec:
-                containers:
-                  - name: check
-                    image: alpine:latest
-                    command: [sh, -c]
-                    args:
-                      [
-                        "wget --spider -S --tries=3 http://blue-green-preview-service.default.svc.cluster.local 2>&1 | grep 'HTTP/1.1 200 OK' && echo true",
-                      ]
-                restartPolicy: Never
+        web:
+          url: "http://blue-green-preview-service.default.svc.cluster.local/"

@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: blue-green-preview-service # FIXED: Added "-preview"
+  name: blue-green-preview-service
 spec:
   type: LoadBalancer
   selector:
     app: blue-green
-    # DO NOT put 'env: blue' here; Argo will inject the selector automatically
   ports:
     - protocol: TCP
       port: 80
