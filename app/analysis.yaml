@@ -10,4 +10,4 @@ spec:
       successCondition: result == "200"
       provider:
         web:
-          url: "http://blue-green-preview-service.default.svc.cluster.local/"
+          url: "http://blue-green-preview-service.default.svc.cluster.local/simulated-crash-404"
