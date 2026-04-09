@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>V2 — Blue-Green Deployment</title>
+  <title>V3 — Broken Rollout</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
 
@@ -11,7 +11,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0a2e1a 0%, #0d5c2e 40%, #1a8a4a 100%);
+      background: linear-gradient(135deg, #4a0a0a 0%, #7d1212 40%, #b31b1b 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -22,7 +22,7 @@
     .glow-bg {
       position: fixed;
       width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(34,197,94,0.18) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(239,68,68,0.18) 0%, transparent 70%);
       top: -100px; right: -100px;
       border-radius: 50%;
       animation: pulse 4s ease-in-out infinite;
@@ -31,7 +31,7 @@
     .glow-bg2 {
       position: fixed;
       width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(220,38,38,0.12) 0%, transparent 70%);
       bottom: -80px; left: -80px;
       border-radius: 50%;
       animation: pulse 4s ease-in-out infinite reverse;
@@ -45,7 +45,7 @@
     .card {
       background: rgba(255,255,255,0.06);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(34,197,94,0.25);
+      border: 1px solid rgba(239,68,68,0.25);
       border-radius: 24px;
       padding: 56px 64px;
       text-align: center;
@@ -53,7 +53,7 @@
       width: 90%;
       position: relative;
       z-index: 2;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(34,197,94,0.1);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(239,68,68,0.1);
       animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -64,7 +64,7 @@
 
     .badge {
       display: inline-block;
-      background: linear-gradient(90deg, #22c55e, #10b981);
+      background: linear-gradient(90deg, #ef4444, #dc2626);
       color: white;
       font-size: 12px;
       font-weight: 700;
@@ -73,13 +73,13 @@
       padding: 6px 18px;
       border-radius: 100px;
       margin-bottom: 24px;
-      box-shadow: 0 0 20px rgba(34,197,94,0.4);
+      box-shadow: 0 0 20px rgba(239,68,68,0.4);
       animation: glow 2s ease-in-out infinite;
     }
 
     @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(34,197,94,0.4); }
-      50% { box-shadow: 0 0 40px rgba(34,197,94,0.7); }
+      0%, 100% { box-shadow: 0 0 20px rgba(239,68,68,0.4); }
+      50% { box-shadow: 0 0 40px rgba(239,68,68,0.7); }
     }
 
     h1 {
@@ -91,7 +91,7 @@
       margin-bottom: 12px;
     }
 
-    h1 span { color: #4ade80; }
+    h1 span { color: #f87171; }
 
     .subtitle {
       color: rgba(255,255,255,0.55);
@@ -103,7 +103,7 @@
 
     .divider {
       width: 60px; height: 3px;
-      background: linear-gradient(90deg, #22c55e, #10b981);
+      background: linear-gradient(90deg, #ef4444, #dc2626);
       border-radius: 2px;
       margin: 0 auto 36px;
     }
@@ -116,8 +116,8 @@
     }
 
     .info-box {
-      background: rgba(34,197,94,0.08);
-      border: 1px solid rgba(34,197,94,0.2);
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
       border-radius: 14px;
       padding: 18px;
       transition: transform 0.2s, border-color 0.2s;
@@ -125,13 +125,13 @@
 
     .info-box:hover {
       transform: translateY(-3px);
-      border-color: rgba(34,197,94,0.5);
+      border-color: rgba(239,68,68,0.5);
     }
 
     .info-box .label {
       font-size: 11px;
       font-weight: 600;
-      color: #4ade80;
+      color: #f87171;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-bottom: 6px;
@@ -154,9 +154,9 @@
 
     .dot {
       width: 10px; height: 10px;
-      background: #22c55e;
+      background: #ef4444;
       border-radius: 50%;
-      box-shadow: 0 0 10px #22c55e;
+      box-shadow: 0 0 10px #ef4444;
       animation: blink 1.5s ease-in-out infinite;
     }
 
@@ -170,31 +170,31 @@
   <div class="glow-bg"></div>
   <div class="glow-bg2"></div>
   <div class="card">
-    <div class="badge">🚀 Version 2 — Green</div>
-    <h1>Blue-<span>Green</span><br/>Deployed!</h1>
-    <p class="subtitle">Argo Rollouts successfully promoted this build.<br/>New version is live — zero downtime achieved.</p>
+    <div class="badge">⚠️ Version 3 — Bad Build</div>
+    <h1>Internal<span> Error</span><br/>500</h1>
+    <p class="subtitle">This simulates a bad deployment! Health Checks will fail,<br/>and Argo Rollouts will abandon the promotion.</p>
     <div class="divider"></div>
     <div class="info-grid">
       <div class="info-box">
         <div class="label">Version</div>
-        <div class="value">V2.0</div>
+        <div class="value">V3.0 (Broken)</div>
       </div>
       <div class="info-box">
-        <div class="label">Strategy</div>
-        <div class="value">Blue-Green</div>
+        <div class="label">Health</div>
+        <div class="value">Status: 500</div>
       </div>
       <div class="info-box">
-        <div class="label">Cluster</div>
-        <div class="value">EKS 1.31</div>
+        <div class="label">Rollout State</div>
+        <div class="value">Pending Drop</div>
       </div>
       <div class="info-box">
-        <div class="label">Status</div>
-        <div class="value">✓ Healthy</div>
+        <div class="label">Analysis</div>
+        <div class="value">Failing...</div>
       </div>
     </div>
     <div class="status-row">
       <div class="dot"></div>
-      <span>Argo Rollout — Active &amp; Stable</span>
+      <span>Argo Rollout — Aborting Active Release</span>
     </div>
   </div>
 </body>
