@@ -36,3 +36,5 @@ spec:
       prePromotionAnalysis:
         templates:
           - templateName: success-rate-check
+        args: []
+        initialDelay: 30s
