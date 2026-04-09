@@ -3,167 +3,199 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>V5 Enterprise Dashboard</title>
+  <title>V6 — Critical Failure</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-    :root {
-      --primary: #6366f1;
-      --surface: #ffffff;
-      --bg: #f8fafc;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #4a0a0a 0%, #7d1212 40%, #b31b1b 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-    body { background-color: var(--bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
-    
-    .sidebar { width: 260px; background: var(--surface); border-right: 1px solid #e2e8f0; padding: 24px; display: flex; flex-direction: column; }
-    .logo { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 40px; display: flex; align-items: center; gap: 8px;}
-    .logo span { background: var(--primary); color: white; padding: 4px 8px; border-radius: 8px; font-size: 14px;}
-    .nav-item { padding: 12px 16px; margin-bottom: 8px; border-radius: 8px; color: var(--text-muted); font-weight: 500; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 12px; }
-    .nav-item:hover, .nav-item.active { background: #eef2ff; color: var(--primary); transform: translateX(4px); }
-    
-    .main-content { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-    .header h1 { font-size: 28px; font-weight: 600; }
-    .badge-live { background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; animation: pulse 2s infinite; }
-    
-    /* View Transitions */
-    .view { display: none; opacity: 0; transform: translateY(10px); transition: var(--transition); }
-    .view.active { display: block; opacity: 1; transform: translateY(0); }
-    
-    /* Dashboard View */
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
-    .stat-card { background: var(--surface); padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: var(--transition); }
-    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-    .stat-card h3 { color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 8px; }
-    .stat-card .value { font-size: 32px; font-weight: 700; color: var(--text-main); }
-    
-    .data-section { background: var(--surface); border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-    .data-section h2 { font-size: 18px; margin-bottom: 20px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 16px; text-align: left; border-bottom: 1px solid #f1f5f9; }
-    th { color: var(--text-muted); font-weight: 500; font-size: 14px; }
-    td { font-weight: 500; }
-    .status-ok { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
 
-    /* About Us View */
-    .about-card { background: var(--surface); border-radius: 20px; border: 1px solid #e2e8f0; padding: 40px; text-align: center; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
-    .about-avatar { width: 100px; height: 100px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; font-weight: 700; }
-    .about-card h2 { font-size: 28px; margin-bottom: 12px; color: var(--text-main); }
-    .about-card .role { color: var(--primary); font-weight: 600; font-size: 16px; margin-bottom: 24px; letter-spacing: 1px; text-transform: uppercase; }
-    .about-card p { color: var(--text-muted); line-height: 1.7; font-size: 16px; margin-bottom: 30px; }
-    .tech-stack { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-    .tech-badge { background: #f1f5f9; color: #475569; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .glow-bg {
+      position: fixed;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(239,68,68,0.18) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      border-radius: 50%;
+      animation: pulse 4s ease-in-out infinite;
+    }
 
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+    .glow-bg2 {
+      position: fixed;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(220,38,38,0.12) 0%, transparent 70%);
+      bottom: -80px; left: -80px;
+      border-radius: 50%;
+      animation: pulse 4s ease-in-out infinite reverse;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.15); opacity: 1; }
+    }
+
+    .card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 24px;
+      padding: 56px 64px;
+      text-align: center;
+      max-width: 640px;
+      width: 90%;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(239,68,68,0.1);
+      animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px rgba(239,68,68,0.4);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(239,68,68,0.4); }
+      50% { box-shadow: 0 0 40px rgba(239,68,68,0.7); }
+    }
+
+    h1 {
+      font-size: 54px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    h1 span { color: #f87171; }
+
+    .subtitle {
+      color: rgba(255,255,255,0.55);
+      font-size: 16px;
+      font-weight: 400;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+      border-radius: 2px;
+      margin: 0 auto 36px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .info-box {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 14px;
+      padding: 18px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .info-box:hover {
+      transform: translateY(-3px);
+      border-color: rgba(239,68,68,0.5);
+    }
+
+    .info-box .label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f87171;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .info-box .value {
+      font-size: 17px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 10px; height: 10px;
+      background: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ef4444;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="logo">Cloud<span>Native</span></div>
-    <div class="nav-item active" onclick="switchTab('dashboard', this)">Dashboard</div>
-    <div class="nav-item" onclick="switchTab('deployments', this)">Deployments</div>
-    <div class="nav-item" onclick="switchTab('about', this)">About Us</div>
-  </div>
-  
-  <div class="main-content">
-    <div class="header">
-      <h1 id="page-title">Overview Dashboard</h1>
-      <div class="badge-live">● V5 - LIVE ON PROD</div>
-    </div>
-    
-    <!-- DASHBOARD VIEW -->
-    <div id="dashboard-view" class="view active">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Total Requests</h3>
-          <div class="value">245k</div>
-        </div>
-        <div class="stat-card">
-          <h3>Uptime (Argo Rollouts)</h3>
-          <div class="value">99.99%</div>
-        </div>
-        <div class="stat-card">
-          <h3>Active Version</h3>
-          <div class="value">v5.0.0</div>
-        </div>
+  <div class="glow-bg"></div>
+  <div class="glow-bg2"></div>
+  <div class="card">
+    <div class="badge">⚠️ Version 6 — Buggy Build</div>
+    <h1>System<span> Outage</span><br/>Simulated</h1>
+    <p class="subtitle">This forces Argo Rollouts to catch the failure.<br/>The V5 application will remain in production unharmed.</p>
+    <div class="divider"></div>
+    <div class="info-grid">
+      <div class="info-box">
+        <div class="label">Version</div>
+        <div class="value">V6.0 (Bad)</div>
       </div>
-      <div class="data-section">
-        <h2>Recent System Events</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>SERVICE</th>
-              <th>STATUS</th>
-              <th>LAST UPDATED</th>
-              <th>DEPLOY PIPELINE</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>frontend-web-app</td>
-              <td><span class="status-ok">Healthy</span></td>
-              <td>Just now</td>
-              <td>Jenkins CI/CD</td>
-            </tr>
-            <tr>
-              <td>auth-microservice</td>
-              <td><span class="status-ok">Healthy</span></td>
-              <td>2 hours ago</td>
-              <td>Jenkins CI/CD</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="info-box">
+        <div class="label">Health</div>
+        <div class="value">Code 500</div>
+      </div>
+      <div class="info-box">
+        <div class="label">Argo State</div>
+        <div class="value">Auto-Reject</div>
+      </div>
+      <div class="info-box">
+        <div class="label">Analysis</div>
+        <div class="value">Failing...</div>
       </div>
     </div>
-
-    <!-- ABOUT US VIEW -->
-    <div id="about-view" class="view">
-      <div class="about-card">
-        <div class="about-avatar">Y</div>
-        <h2>Yashvardhan</h2>
-        <div class="role">Cloud & DevOps Architect</div>
-        <p>This Blue-Green Deployment project was engineered to demonstrate zero-downtime application releases using Kubernetes. It integrates GitHub Actions, Jenkins, AWS EKS, and Argo Rollouts to ensure highly available software delivery infrastructure.</p>
-        <div class="tech-stack">
-          <div class="tech-badge">AWS EKS</div>
-          <div class="tech-badge">Argo Rollouts</div>
-          <div class="tech-badge">Terraform</div>
-          <div class="tech-badge">Jenkins</div>
-          <div class="tech-badge">Kubernetes</div>
-          <div class="tech-badge">Docker</div>
-        </div>
-      </div>
+    <div class="status-row">
+      <div class="dot"></div>
+      <span>Argo Rollout — Aborting Release</span>
     </div>
   </div>
-
-  <script>
-    function switchTab(tabId, element) {
-      // Update sidebar styling
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      element.classList.add('active');
-
-      // Update Header
-      const title = document.getElementById('page-title');
-      if(tabId === 'dashboard') title.innerText = "Overview Dashboard";
-      if(tabId === 'deployments') title.innerText = "Deployment History";
-      if(tabId === 'about') title.innerText = "About the Architect";
-
-      // Toggle views gracefully
-      const views = document.querySelectorAll('.view');
-      views.forEach(view => {
-        view.classList.remove('active');
-        setTimeout(() => view.style.display = 'none', 300); // Wait for fade out
-      });
-
-      const selectedView = document.getElementById(tabId + '-view');
-      if (selectedView) {
-        setTimeout(() => {
-          selectedView.style.display = 'block';
-          setTimeout(() => selectedView.classList.add('active'), 50);
-        }, 300);
-      }
-    }
-  </script>
 </body>
 </html>
