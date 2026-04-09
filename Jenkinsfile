@@ -46,6 +46,8 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
+                sh "kubectl apply -f app/deployment.yaml"
+                sh "kubectl apply -f app/preview-service.yaml"
                 sh "kubectl apply -f app/analysis.yaml"
                 sh "kubectl apply -f app/rollout.yaml --validate=false"
             }
