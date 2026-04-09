@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0" # Pins to version 5.x to avoid version 6.0 bugs
+      version = "~> 5.0" 
     }
   }
 }
@@ -45,16 +45,25 @@ module "eks" {
 
   eks_managed_node_groups = {
   nodes = {
-    min_size     = 1  # You can keep this at 1 to save money
-    max_size     = 3  # Increase this to 3
-    desired_size = 3 # Keep this at 1; the autoscaler will increase it when needed
-    instance_types = ["t3.micro"] # These are small, so the autoscaler is definitely needed!
+    min_size     = 1  
+    max_size     = 3  
+    desired_size = 3 
+    instance_types = ["t3.micro"] 
 
-    # ADD THIS TAG BLOCK HERE
     tags = {
       "k8s.io/cluster-autoscaler/enabled" = "true"
       "k8s.io/cluster-autoscaler/blue-green-cluster" = "owned"
       }
     }
+  }
+}
+
+resource "aws_ecr_repository" "app" {
+  name                 = "blue-green-app"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+
+  image_scanning_configuration {
+    scan_on_push = true
   }
 }
