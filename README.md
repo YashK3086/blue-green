@@ -4,7 +4,7 @@ This project demonstrates a production-grade DevOps workflow implementing Infras
 🚀 Key Features
 Infrastructure-as-Code: Provisioned an AWS EKS (v1.31) cluster using Terraform.
 
-Automated CI/CD: Integrated GitHub Actions to build/push Docker images and ArgoCD/Rollouts for deployment.
+Automated CI/CD: Deployed a custom Jenkins CI/CD server on AWS EC2 to process GitHub Webhooks, build Docker images, and trigger Argo Rollouts deployments.
 
 Zero-Downtime Strategy: Implemented a Blue-Green Deployment pattern to ensure seamless version transitions.
 
@@ -23,16 +23,18 @@ Orchestration: Kubernetes
 
 CD & Strategy: ArgoCD / Argo Rollouts
 
-CI: GitHub Actions
+CI/CD Engine: Jenkins (Self-hosted on AWS EC2)
 
 📈 The Architecture
 The pipeline follows a strict GitOps flow:
 
-Developer Push: A code change (e.g., V6 to V7) triggers a GitHub Action.
+Developer Push: A code change triggers a Webhook from GitHub.
 
-Build & Push: The runner builds a Docker image and pushes it to the registry.
+CI Engine: The self-hosted Jenkins server on AWS EC2 catches the payload and runs the pipeline.
 
-Argo Sync: ArgoCD detects the change and triggers an Argo Rollout.
+Build & Push: Jenkins builds a new Docker image and pushes it to the AWS ECR registry.
+
+Declarative Apply: Jenkins updates the Kubernetes manifests and automatically applies them to EKS, triggering the Argo Rollout.
 
 Blue-Green Cutover: A new "Green" environment is created. Once health checks pass, traffic is shifted 100% from "Blue" to "Green."
 
