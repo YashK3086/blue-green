@@ -37,4 +37,4 @@ spec:
         templates:
           - templateName: success-rate-check
         args: []
-        initialDelay: 30s
+        initialDelay: 60s
