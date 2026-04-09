@@ -48,7 +48,7 @@ module "eks" {
     min_size     = 1  
     max_size     = 3  
     desired_size = 3 
-    instance_types = ["t3.micro"] 
+    instance_types = ["t3.small"] 
 
     tags = {
       "k8s.io/cluster-autoscaler/enabled" = "true"
