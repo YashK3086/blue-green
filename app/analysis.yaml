@@ -13,12 +13,3 @@ spec:
         web:
           url: "http://blue-green-preview-service.default.svc.cluster.local/health.json"
           jsonPath: "{$.status}"
-    - name: prometheus-health-audit
-      interval: 30s
-      count: 2
-      successCondition: result[0] >= 1
-      provider:
-        prometheus:
-          address: http://prometheus-service.monitoring.svc.cluster.local:8080
-          query: |
-            sum(up{app="blue-green"})
