@@ -69,9 +69,9 @@ pipeline {
         stage('Post-Deploy Health Audit') {
             steps {
                 script {
-                    echo "Querying Prometheus for final deployment health..."
-                    // This checks if the active pods are 'up' according to Prometheus
-                    sh "curl -s 'http://prometheus-service.monitoring.svc.cluster.local:8080/api/v1/query?query=up{app=\"blue-green\"}'"
+                    echo "Checking Kubernetes for live pod status..."
+                    // This checks that at least one pod is 'Running'
+                    sh "kubectl get pods -l app=blue-green | grep Running"
                 }
             }
         }
