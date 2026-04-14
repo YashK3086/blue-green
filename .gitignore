@@ -1,3 +1,6 @@
+# Ignore Project Memory / Viva Guide
+MODEL_MEMORY.md
+
 # Ignore Terraform working directory
 .terraform/
 
