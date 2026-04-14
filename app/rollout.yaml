@@ -15,6 +15,9 @@ spec:
       labels:
         app: blue-green
         env: blue
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '80'
     spec:
       containers:
         - name: web-app

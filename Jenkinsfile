@@ -46,10 +46,32 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
-                sh "kubectl apply -f app/deployment.yaml"
+                
+                // Ensure Monitoring Stack is up
+                sh "kubectl apply -f monitoring/namespace.yaml"
+                sh "kubectl apply -f monitoring/"
+
+                // Deploy App
                 sh "kubectl apply -f app/preview-service.yaml"
                 sh "kubectl apply -f app/analysis.yaml"
                 sh "kubectl apply -f app/rollout.yaml --validate=false"
+            }
+        }
+
+        stage('Wait for Rollout & Analysis') {
+            steps {
+                echo "Monitoring Argo Rollout promotion..."
+                sh "kubectl argo rollouts status blue-green-rollout --timeout 10m"
+            }
+        }
+
+        stage('Post-Deploy Health Audit') {
+            steps {
+                script {
+                    echo "Querying Prometheus for final deployment health..."
+                    // This checks if the active pods are 'up' according to Prometheus
+                    sh "curl -s 'http://prometheus-service.monitoring.svc.cluster.local:8080/api/v1/query?query=up{app=\"blue-green\"}'"
+                }
             }
         }
     }

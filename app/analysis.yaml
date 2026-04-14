@@ -4,12 +4,23 @@ metadata:
   name: success-rate-check
 spec:
   metrics:
-    - name: web-check
+    - name: web-health-check
       interval: 20s
       count: 3
-      consecutiveErrorLimit: 10
+      consecutiveErrorLimit: 1
       successCondition: result == "200"
       provider:
         web:
           url: "http://blue-green-preview-service.default.svc.cluster.local/health.json"
           jsonPath: "{$.status}"
+    - name: prometheus-success-rate
+      interval: 30s
+      count: 2
+      successCondition: result[0] > 0.90
+      provider:
+        prometheus:
+          address: http://prometheus-service.monitoring.svc.cluster.local:8080
+          query: |
+            sum(irate(http_requests_total{app="blue-green", env="green"}[2m])) 
+            / 
+            sum(irate(http_requests_total{app="blue-green", env="green"}[2m]))
