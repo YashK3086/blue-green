@@ -180,7 +180,7 @@ pipeline {
 
                     echo "=================================================="
                     echo " [DAST] Starting OWASP ZAP Baseline Scan"
-                    echo " Target: ${env.PREVIEW_LB_URL}"
+                    echo " Target: ${previewUrl}"
                     echo "=================================================="
 
                     sh """
@@ -191,7 +191,7 @@ pipeline {
                           -v \$PWD:/zap/wrk/:rw \
                           ghcr.io/zaproxy/zaproxy:bare \
                           zap.sh -cmd \
-                            -quickurl ${env.PREVIEW_LB_URL} \
+                            -quickurl ${previewUrl} \
                             -quickprogress \
                             -quickout /zap/wrk/bg-zap-report.html || true
                     """
