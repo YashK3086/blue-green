@@ -1,144 +1,271 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>V5 — Enterprise Dashboard</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
-    
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      color: white;
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      overflow: hidden;
-    }
-    .background-orb {
-      position: absolute; width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      top: -100px; left: -100px;
-      animation: float 6s ease-in-out infinite;
-    }
-    .background-orb2 {
-      position: absolute; width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      bottom: -50px; right: -50px;
-      animation: float 6s ease-in-out infinite reverse;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(30px); }
-    }
-    .container {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 50px;
-      max-width: 800px;
-      width: 90%;
-      z-index: 10;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: slideUp 0.6s ease-out;
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
-    }
-    h1 { font-size: 42px; font-weight: 700; background: linear-gradient(to right, #818cf8, #38bdf8); -webkit-background-clip: text; color: transparent; }
-    .badge {
-      background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.4);
-      color: #4ade80; padding: 8px 16px; border-radius: 50px; font-weight: 600; letter-spacing: 1px; font-size: 14px;
-      animation: pulseActive 2s infinite;
-    }
-    @keyframes pulseActive {
-      0%, 100% { box-shadow: 0 0 0 rgba(34, 197, 94, 0); }
-      50% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
-    }
-    .tabs { display: flex; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-    .tab { color: rgba(255,255,255,0.6); cursor: pointer; font-size: 18px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 8px; }
-    .tab:hover { color: white; background: rgba(255,255,255,0.05); }
-    .tab.active { color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
-    
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .card { background: rgba(0,0,0,0.2); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-    .card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.02); }
-    .card h3 { color: #94a3b8; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    .card p { font-size: 24px; font-weight: 600; }
-    
-    .content-section { display: none; animation: fadeIn 0.4s ease; }
-    .content-section.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    
-    ul { list-style: none; margin-top: 15px; }
-    li { margin-bottom: 10px; color: #cbd5e1; display: flex; align-items: center; gap: 10px; }
-    li::before { content: '✓'; color: #4ade80; font-weight: bold; }
-  </style>
-</head>
-<body>
-  <div class="background-orb"></div>
-  <div class="background-orb2"></div>
-  <div class="container">
-    <div class="header">
-      <h1>Cloud Dashboard</h1>
-      <div class="badge">● V5 Active</div>
-    </div>
-    
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('metrics')">Metrics</div>
-      <div class="tab" onclick="switchTab('about')">About Us</div>
-    </div>
-    
-    <div id="metrics" class="content-section active">
-      <div class="grid">
-        <div class="card">
-          <h3>Argo Health</h3>
-          <p style="color: #4ade80;">200 OK (Passing)</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>V5 — Enterprise Dashboard-BUT LIVE SWITCH!</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Outfit", sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .background-orb {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(
+          circle,
+          rgba(99, 102, 241, 0.15) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        top: -100px;
+        left: -100px;
+        animation: float 6s ease-in-out infinite;
+      }
+      .background-orb2 {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(14, 165, 233, 0.15) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        bottom: -50px;
+        right: -50px;
+        animation: float 6s ease-in-out infinite reverse;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(30px);
+        }
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 50px;
+        max-width: 800px;
+        width: 90%;
+        z-index: 10;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        animation: slideUp 0.6s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+      h1 {
+        font-size: 42px;
+        font-weight: 700;
+        background: linear-gradient(to right, #818cf8, #38bdf8);
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+      .badge {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+        color: #4ade80;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 14px;
+        animation: pulseActive 2s infinite;
+      }
+      @keyframes pulseActive {
+        0%,
+        100% {
+          box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+        }
+        50% {
+          box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+        }
+      }
+      .tabs {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+      }
+      .tab {
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 500;
+        transition: 0.3s;
+        padding: 5px 10px;
+        border-radius: 8px;
+      }
+      .tab:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .tab.active {
+        color: #38bdf8;
+        background: rgba(56, 189, 248, 0.1);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .card {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 25px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .card h3 {
+        color: #94a3b8;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+      }
+      .card p {
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .content-section {
+        display: none;
+        animation: fadeIn 0.4s ease;
+      }
+      .content-section.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      ul {
+        list-style: none;
+        margin-top: 15px;
+      }
+      li {
+        margin-bottom: 10px;
+        color: #cbd5e1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      li::before {
+        content: "✓";
+        color: #4ade80;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-orb"></div>
+    <div class="background-orb2"></div>
+    <div class="container">
+      <div class="header">
+        <h1>Cloud Dashboard</h1>
+        <div class="badge">● V6 Live Presentation!</div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('metrics')">Metrics</div>
+        <div class="tab" onclick="switchTab('about')">About Us</div>
+      </div>
+
+      <div id="metrics" class="content-section active">
+        <div class="grid">
+          <div class="card">
+            <h3>Argo Health</h3>
+            <p style="color: #4ade80">200 OK (Passing)</p>
+          </div>
+          <div class="card">
+            <h3>CI/CD Engine</h3>
+            <p>Jenkins Pipeline</p>
+          </div>
+          <div class="card">
+            <h3>Infra Provisioning</h3>
+            <p>Terraform</p>
+          </div>
+          <div class="card">
+            <h3>Active Deployment</h3>
+            <p>Blue-Green Strategy</p>
+          </div>
         </div>
-        <div class="card">
-          <h3>CI/CD Engine</h3>
-          <p>Jenkins Pipeline</p>
-        </div>
-        <div class="card">
-          <h3>Infra Provisioning</h3>
-          <p>Terraform</p>
-        </div>
-        <div class="card">
-          <h3>Active Deployment</h3>
-          <p>Blue-Green Strategy</p>
+      </div>
+
+      <div id="about" class="content-section">
+        <div class="card" style="grid-column: span 2">
+          <h3>Project Architecture</h3>
+          <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1">
+            A completely automated, zero-downtime deployment framework designed
+            for maximum resilience.
+          </p>
+          <ul>
+            <li>AWS EKS Cluster automatically built via Terraform</li>
+            <li>Source control watched silently by GitHub Webhooks</li>
+            <li>Declarative Jenkins Pipeline executing isolated build steps</li>
+            <li>Argo Rollouts mathematically verifying health signatures</li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <div id="about" class="content-section">
-      <div class="card" style="grid-column: span 2;">
-        <h3>Project Architecture</h3>
-        <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1;">A completely automated, zero-downtime deployment framework designed for maximum resilience.</p>
-        <ul>
-          <li>AWS EKS Cluster automatically built via Terraform</li>
-          <li>Source control watched silently by GitHub Webhooks</li>
-          <li>Declarative Jenkins Pipeline executing isolated build steps</li>
-          <li>Argo Rollouts mathematically verifying health signatures</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.content-section').forEach(c => c.classList.remove('active'));
-      event.target.classList.add('active');
-      document.getElementById(tabId).classList.add('active');
-    }
-  </script>
-</body>
+    <script>
+      function switchTab(tabId) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".content-section")
+          .forEach((c) => c.classList.remove("active"));
+        event.target.classList.add("active");
+        document.getElementById(tabId).classList.add("active");
+      }
+    </script>
+  </body>
 </html>
