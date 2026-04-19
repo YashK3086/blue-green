@@ -13,7 +13,7 @@ pipeline {
         CLUSTER_NAME           = 'blue-green-cluster'
         AWS_ACCESS_KEY_ID      = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY  = credentials('AWS_SECRET_ACCESS_KEY')
-        PATH                   = "/var/lib/jenkins/bin:${env.PATH}"
+        PATH                   = "/opt/sonar-scanner-6.2.1.4610-linux-x64/bin:/var/lib/jenkins/bin:${env.PATH}"
 
         // --- SonarQube SAST ---
         SONAR_HOST_URL = credentials('SONAR_HOST_URL')
