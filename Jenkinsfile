@@ -15,10 +15,9 @@ pipeline {
         AWS_SECRET_ACCESS_KEY  = credentials('AWS_SECRET_ACCESS_KEY')
         PATH                   = "/var/lib/jenkins/bin:${env.PATH}"
 
-        // --- SonarQube SAST (TEMP: stage is skipped until credentials are added) ---
-        // Once SonarQube is up, replace these with: credentials('SONAR_HOST_URL') etc.
-        SONAR_HOST_URL = 'http://100.52.178.181:9000'
-        SONAR_TOKEN    = 'PLACEHOLDER'
+        // --- SonarQube SAST ---
+        SONAR_HOST_URL = credentials('SONAR_HOST_URL')
+        SONAR_TOKEN    = credentials('SONAR_TOKEN')
 
         // --- ZAP DAST (populated dynamically) ---
         PREVIEW_LB_URL = ''
@@ -37,14 +36,11 @@ pipeline {
 
         // --------------------------------------------------------
         // Stage 2: SAST — SonarQube Static Analysis
-        // TEMP: Skipped until SonarQube EC2 is configured.
-        // Re-enable by removing the when block once credentials are set.
+        // Runs BEFORE Docker build so insecure code never gets built.
+        // Scans: app/ source + terraform/ IaC manifests.
+        // Quality Gate check blocks the pipeline if score fails.
         // --------------------------------------------------------
         stage('SAST: SonarQube Scan') {
-            when {
-                // TEMP SKIP: Set to true once SONAR_HOST_URL + SONAR_TOKEN are configured in Jenkins
-                expression { return false }
-            }
             steps {
                 script {
                     echo "=================================================="
