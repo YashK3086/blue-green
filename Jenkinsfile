@@ -59,7 +59,8 @@ pipeline {
                           -Dsonar.sources=app,terraform \\
                           -Dsonar.exclusions='**/.terraform/**,**/terraform.tfstate*,**/.terraform.lock.hcl' \\
                           -Dsonar.host.url=${env.SONAR_HOST_URL} \\
-                          -Dsonar.token=${env.SONAR_TOKEN} \\
+                          -Dsonar.login=admin \\
+                          -Dsonar.password='Viva@2026' \\
                           -Dsonar.qualitygate.wait=true \\
                           -Dsonar.sourceEncoding=UTF-8
                     """
