@@ -15,7 +15,7 @@ data:
       alertmanagers:
       - static_configs:
         - targets:
-          - alertmanager:9093
+          - alertmanager.monitoring.svc.cluster.local:80
 
     rule_files:
       - "/etc/prometheus/alert_rules.yml"
@@ -42,18 +42,6 @@ data:
         kubernetes_sd_configs:
         - role: pod
         relabel_configs:
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-          action: keep
-          regex: true
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-          action: replace
-          target_label: __metrics_path__
-          regex: (.+)
-        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-          action: replace
-          target_label: __address__
-          regex: ([^:]+)(?::\d+)?;(\d+)
-          replacement: $1:$2
         - action: labelmap
           regex: __meta_kubernetes_pod_label_(.+)
         - source_labels: [__meta_kubernetes_namespace]
@@ -65,6 +53,16 @@ data:
 
   alert_rules.yml: |-
     groups:
+    - name: InstanceDown
+      rules:
+      - alert: kubernetes-pod-down
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pod {{ $labels.instance }} is down"
+          description: "Pod {{ $labels.instance }} has been down for more than 1 minute."
     - name: BlueGreenAlerts
       rules:
       - alert: HighErrorRateGreen

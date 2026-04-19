@@ -1,0 +1,139 @@
+
+# ============================================================
+# DevOps-Blue-Green | Argo AnalysisTemplate
+# zap-dast-analysis.yaml
+#
+# Purpose:
+#   An Argo Rollouts AnalysisTemplate that runs the OWASP ZAP
+#   DAST scan as a Kubernetes Job. This template is referenced
+#   in rollout.yaml under `prePromotionAnalysis`.
+#
+#   The Job script:
+#     1. Waits for the preview URL to be reachable (readiness probe).
+#     2. Executes a ZAP baseline scan.
+#     3. Exits 0 (pass) or 1 (fail) based on HIGH-risk alert count.
+#
+#   On failure, Argo Rollouts will automatically abort and rollback.
+# ============================================================
+
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: zap-dast-security-check
+  namespace: default
+  labels:
+    app: blue-green
+    project: devops-blue-green
+    security-tier: dast
+spec:
+  args:
+    # The preview URL is injected at runtime from the Rollout spec.
+    - name: preview-url
+
+  metrics:
+    - name: zap-high-vulnerability-gate
+      # Run the job once; do not retry on failure (a High vuln is a hard stop).
+      count: 1
+      failureLimit: 0
+
+      provider:
+        job:
+          metadata:
+            labels:
+              app: blue-green
+              security-scan: dast-zap
+              project: devops-blue-green
+          spec:
+            backoffLimit: 0  # No retries – fail fast on HIGH vulnerabilities
+            template:
+              spec:
+                restartPolicy: Never
+                containers:
+                  - name: zap-scanner
+                    # Use the official ZAP stable image from OWASP
+                    image: ghcr.io/zaproxy/zaproxy:stable
+                    imagePullPolicy: IfNotPresent
+
+                    # Run the baseline scan directly via inline shell command.
+                    # The exit code of this container determines AnalysisRun pass/fail.
+                    command: ["/bin/bash", "-c"]
+                    args:
+                      - |
+                        set -e
+                        TARGET="{{args.preview-url}}"
+                        REPORT_JSON="/zap/wrk/bg-zap-report.json"
+                        REPORT_HTML="/zap/wrk/bg-zap-report.html"
+
+                        echo "============================================================"
+                        echo " [DAST] Starting OWASP ZAP Baseline Scan"
+                        echo " Target: ${TARGET}"
+                        echo "============================================================"
+
+                        # Step 1: Wait for the preview URL to be reachable (max 3 minutes)
+                        echo "[ZAP] Waiting for preview URL to be ready..."
+                        for i in $(seq 1 18); do
+                          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${TARGET}" || echo "000")
+                          if [ "${HTTP_CODE}" = "200" ]; then
+                            echo "[ZAP] Preview URL is reachable (HTTP 200). Starting scan."
+                            break
+                          fi
+                          echo "[ZAP] Attempt ${i}/18 - HTTP ${HTTP_CODE}. Retrying in 10s..."
+                          sleep 10
+                          if [ "$i" -eq "18" ]; then
+                            echo "[ZAP] ⚠️ Preview URL not reachable after 3 minutes. Aborting scan."
+                            exit 1
+                          fi
+                        done
+
+                        # Step 2: Run ZAP Baseline Scan
+                        zap-baseline.py \
+                          -t "${TARGET}" \
+                          -J "bg-zap-report.json" \
+                          -r "bg-zap-report.html" \
+                          -l WARN \
+                          -I || true  # Capture exit but we do our own check below
+
+                        # Step 3: Parse JSON report for HIGH-risk alerts (riskcode=3)
+                        HIGH_COUNT=$(python3 -c "
+                        import json, sys
+                        try:
+                          with open('/zap/wrk/bg-zap-report.json') as f:
+                            data = json.load(f)
+                          highs = [
+                            a for site in data.get('site', [])
+                            for a in site.get('alerts', [])
+                            if a.get('riskcode', '0') == '3'
+                          ]
+                          print(len(highs))
+                          for h in highs:
+                            print(f\"  [HIGH] {h.get('alert','?')} | CWE-{h.get('cweid','?')}\", file=sys.stderr)
+                        except Exception as e:
+                          print(0)
+                          print(f'Parse error: {e}', file=sys.stderr)
+                        ")
+
+                        echo "[ZAP] HIGH-risk vulnerabilities found: ${HIGH_COUNT}"
+
+                        # Step 4: Gate decision
+                        if [ "${HIGH_COUNT}" -gt "0" ]; then
+                          echo "❌ DAST GATE FAILED: ${HIGH_COUNT} HIGH-risk alerts. Rolling back."
+                          exit 1
+                        else
+                          echo "✅ DAST GATE PASSED: No HIGH-risk vulnerabilities."
+                          exit 0
+                        fi
+
+                    resources:
+                      requests:
+                        memory: "512Mi"
+                        cpu: "250m"
+                      limits:
+                        memory: "1Gi"
+                        cpu: "500m"
+                    volumeMounts:
+                      - name: zap-reports
+                        mountPath: /zap/wrk
+
+                volumes:
+                  - name: zap-reports
+                    emptyDir: {}

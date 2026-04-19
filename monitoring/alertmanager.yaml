@@ -6,19 +6,29 @@ metadata:
 data:
   alertmanager.yml: |-
     global:
-      resolve_timeout: 1m
+      resolve_timeout: 5m
+      slack_api_url: 'YOUR_SLACK_WEBHOOK_URL_HERE'
 
     route:
       group_by: ['alertname']
-      group_wait: 10s
-      group_interval: 10s
-      repeat_interval: 1m
-      receiver: 'log-receiver'
+      group_wait: 5s
+      group_interval: 5s
+      repeat_interval: 1h
+      receiver: 'slack-notifications'
 
     receivers:
-    - name: 'log-receiver'
-      # In a real scenario, this would be Slack/Email. 
-      # For now, we'll just let it log or provide a placeholder.
+    - name: 'slack-notifications'
+      slack_configs:
+      - channel: '#new-channel'
+        send_resolved: true
+        icon_emoji: ':fireengine:'
+        title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Blue-Green Cluster Alert'
+        text: >-
+          {{ range .Alerts }}
+            *Alert:* {{ .Annotations.summary }}
+            *Severity:* `{{ .Labels.severity }}`
+            *Description:* {{ .Annotations.description }}
+          {{ end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,6 +81,6 @@ spec:
   selector:
     app: alertmanager
   ports:
-    - port: 9093
+    - port: 80
       targetPort: 9093
-  type: NodePort
+  type: LoadBalancer

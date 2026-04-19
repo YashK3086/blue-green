@@ -35,9 +35,17 @@ spec:
     blueGreen:
       activeService: blue-green-service
       previewService: blue-green-preview-service
-      autoPromotionEnabled: true
+      # Promotion is paused until ALL prePromotionAnalysis templates pass.
+      # If any template fails, Argo automatically aborts and rolls back.
+      autoPromotionEnabled: false
       prePromotionAnalysis:
         templates:
+          # Template 1: HTTP health check (existing)
           - templateName: success-rate-check
-        args: []
+          # Template 2: OWASP ZAP DAST scan (new - Phase 4 Security)
+          - templateName: zap-dast-security-check
+        args:
+          # Inject the preview service URL into the ZAP analysis template
+          - name: preview-url
+            value: "http://blue-green-preview-service.default.svc.cluster.local"
         initialDelay: 60s
