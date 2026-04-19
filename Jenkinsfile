@@ -49,14 +49,21 @@ pipeline {
                     echo "=================================================="
 
                     sh """
-                        sonar-scanner \
-                          -Dsonar.projectKey=devops-blue-green \
-                          -Dsonar.projectName='DevOps Blue-Green Pipeline' \
-                          -Dsonar.sources=app,terraform \
-                          -Dsonar.exclusions='**/.terraform/**,**/terraform.tfstate*,**/.terraform.lock.hcl' \
-                          -Dsonar.host.url=${env.SONAR_HOST_URL} \
-                          -Dsonar.login=${env.SONAR_TOKEN} \
-                          -Dsonar.qualitygate.wait=true \
+                        if ! command -v sonar-scanner &> /dev/null; then
+                            echo "SonarScanner not found in PATH. Downloading locally..."
+                            wget -q -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip
+                            unzip -q -o sonar-scanner.zip
+                            export PATH="\\$PWD/sonar-scanner-6.2.1.4610-linux-x64/bin:\\$PATH"
+                        fi
+
+                        sonar-scanner \\
+                          -Dsonar.projectKey=devops-blue-green \\
+                          -Dsonar.projectName='DevOps Blue-Green Pipeline' \\
+                          -Dsonar.sources=app,terraform \\
+                          -Dsonar.exclusions='**/.terraform/**,**/terraform.tfstate*,**/.terraform.lock.hcl' \\
+                          -Dsonar.host.url=\${env.SONAR_HOST_URL} \\
+                          -Dsonar.login=\${env.SONAR_TOKEN} \\
+                          -Dsonar.qualitygate.wait=true \\
                           -Dsonar.sourceEncoding=UTF-8
                     """
 
