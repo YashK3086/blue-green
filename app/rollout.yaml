@@ -37,7 +37,8 @@ spec:
       previewService: blue-green-preview-service
       # Promotion is paused until ALL prePromotionAnalysis templates pass.
       # If any template fails, Argo automatically aborts and rolls back.
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
+      autoPromotionSeconds: 15
       prePromotionAnalysis:
         templates:
           # Template 1: HTTP health check (existing)

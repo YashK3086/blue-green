@@ -79,6 +79,17 @@ pipeline {
         }
 
         // --------------------------------------------------------
+        // Stage 2.5: Cleanup Docker Space (Pre-Build)
+        // --------------------------------------------------------
+        stage('Cleanup Docker') {
+            steps {
+                script {
+                    sh "docker system prune -a --volumes -f || true"
+                }
+            }
+        }
+
+        // --------------------------------------------------------
         // Stage 3: ECR Login
         // --------------------------------------------------------
         stage('AWS ECR Login') {
