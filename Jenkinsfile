@@ -189,7 +189,7 @@ pipeline {
 
                         docker run --rm \
                           -v /tmp/bg-zap-reports:/zap/wrk/:rw \
-                          ghcr.io/zaproxy/zaproxy:stable \
+                          ghcr.io/zaproxy/zaproxy:bare \
                           zap-baseline.py \
                             -t ${env.PREVIEW_LB_URL} \
                             -J bg-zap-report.json \
