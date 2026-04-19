@@ -184,16 +184,19 @@ pipeline {
                     echo "=================================================="
 
                     sh """
-                        mkdir -p /tmp/bg-zap-reports
-                        chmod 777 /tmp/bg-zap-reports
+                        mkdir -p zap-temp
+                        chmod 777 zap-temp
 
                         docker run --rm \
-                          -v \$PWD:/zap/wrk/:rw \
+                          -v \$PWD/zap-temp:/zap/wrk/:rw \
                           ghcr.io/zaproxy/zaproxy:bare \
                           zap.sh -cmd \
                             -quickurl ${previewUrl} \
                             -quickprogress \
                             -quickout /zap/wrk/bg-zap-report.html || true
+
+                        mv zap-temp/bg-zap-report.html . || true
+                        rm -rf zap-temp || true
                     """
 
                     // Since we used native zap.sh, we just check if it ran successfully
