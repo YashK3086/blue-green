@@ -196,6 +196,8 @@ pipeline {
                             -r bg-zap-report.html \
                             -l WARN \
                             -I || true
+                        
+                        cp /tmp/bg-zap-reports/bg-zap-report.html bg-zap-report.html || true
                     """
 
                     // Parse JSON for HIGH-risk alerts (riskcode == "3")
@@ -233,7 +235,7 @@ except Exception as e:
             }
             post {
                 always {
-                    archiveArtifacts artifacts: '/tmp/bg-zap-reports/bg-zap-report.html',
+                    archiveArtifacts artifacts: 'bg-zap-report.html',
                                      allowEmptyArchive: true,
                                      fingerprint: true
                 }
