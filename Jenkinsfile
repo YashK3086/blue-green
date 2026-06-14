@@ -56,7 +56,7 @@ pipeline {
                         ./sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner \\
                           -Dsonar.projectKey=devops-blue-green \\
                           -Dsonar.projectName='DevOps Blue-Green Pipeline' \\
-                          -Dsonar.sources=app,terraform \\
+                          -Dsonar.sources=src,terraform \\
                           -Dsonar.exclusions='**/.terraform/**,**/terraform.tfstate*,**/.terraform.lock.hcl' \\
                           -Dsonar.host.url=${env.SONAR_HOST_URL} \\
                           -Dsonar.login=admin \\
@@ -110,7 +110,7 @@ pipeline {
                     def IMAGE_TAG = "${env.GIT_COMMIT}" ?: "latest"
                     env.IMAGE_URL = "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
 
-                    sh "docker build -t ${env.IMAGE_URL} ./app"
+                    sh "docker build -t ${env.IMAGE_URL} ./src"
                     sh "docker push ${env.IMAGE_URL}"
                 }
             }
@@ -121,7 +121,7 @@ pipeline {
         // --------------------------------------------------------
         stage('Update Manifests') {
             steps {
-                sh "sed -i \"s|image: .*blue-green-app:.*|image: ${env.IMAGE_URL}|\" app/rollout.yaml"
+                sh "sed -i \"s|image: .*blue-green-app:.*|image: ${env.IMAGE_URL}|\" config/k8s/rollout.yaml"
             }
         }
 
@@ -134,11 +134,11 @@ pipeline {
             steps {
                 script {
                     sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
-                    sh "kubectl apply -f monitoring/"
-                    sh "kubectl apply -f app/preview-service.yaml"
-                    sh "kubectl apply -f app/analysis.yaml"
-                    sh "kubectl apply -f app/zap-dast-analysis.yaml"
-                    sh "kubectl apply -f app/rollout.yaml --validate=false"
+                    sh "kubectl apply -f config/monitoring/"
+                    sh "kubectl apply -f config/k8s/preview-service.yaml"
+                    sh "kubectl apply -f config/k8s/analysis.yaml"
+                    sh "kubectl apply -f config/k8s/zap-dast-analysis.yaml"
+                    sh "kubectl apply -f config/k8s/rollout.yaml --validate=false"
 
                     echo "Green preview pod deploying. Waiting 60s for initialisation..."
                     sleep(60)
